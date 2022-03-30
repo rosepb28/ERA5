@@ -17,13 +17,14 @@ c.retrieve(
             '300', '350', '400',
             '450', '500', '550',
             '600', '650', '700',
+            
         ],
-        'year': '2021',
-        'month': '11',
+        'year': '2022',
+        'month': '02',
         'time': '00:00',
         'area': [
             30, -120, -60,
             -30,
         ],
     },
-    'nov21.nc')
+    'C:/Users/Rosamaria/Documents/GitHub/ERA5/NC/feb22.nc')
