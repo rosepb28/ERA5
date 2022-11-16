@@ -11,6 +11,46 @@ from matplotlib.cm import get_cmap
 from matplotlib import cm
 from matplotlib.colors import ListedColormap,LinearSegmentedColormap
 
+def era5_download(month, year, os):
+    '''Función para descargar un archivo NetCDF del ERA5.
+    Argumentos
+    month : mes en interger
+    year : año en interget
+    os : sistema operativo, puede ser "win" o "linux"
+    '''
+
+    month = str(month)
+    year = str(year)
+    months = {'1': 'ene', '2': 'feb', '3': 'mar', '4': 'abr', '5': 'may', '6':'jun',
+              '7': 'jul', '8': 'ago', '9': 'set','10':'oct', '11': 'nov', '12': 'dic'}
+
+    win = 'C:/Users/Rosamaria/Documents/GitHub/ERA5/NC/'
+    linux = '/home/rosamaria/Documentos/GitHub/ERA5/NC/'
+    path = win if os == 'win' else linux
+
+    import cdsapi
+
+    c = cdsapi.Client()
+    c.retrieve(
+        'reanalysis-era5-pressure-levels-monthly-means',
+        {
+            'format': 'netcdf',
+            'product_type': 'monthly_averaged_reanalysis',
+            'variable': ['divergence', 'relative_humidity', 'specific_humidity',
+                'temperature', 'u_component_of_wind', 'v_component_of_wind',
+                'vertical_velocity', 'vorticity'],
+            'pressure_level': ['200', '225', '250',
+                                '300', '350', '400',
+                                '450', '500', '550',
+                                '600', '650', '700',
+                                '950'],
+            'year': year, 'month': month, 'time': '00:00',
+            'area': [30, -120, -60, -30],
+        },
+        
+        path + '%s%s.nc'%(months[month],year[-2:]))
+    return print('Archivo descargado.')
+
 def c_cmap(file,sheet,clevs,inv=False):
     import pandas as pd
     from matplotlib.colors import ListedColormap, BoundaryNorm
@@ -80,6 +120,7 @@ def projection_grids(ext, tpe = False, proj = ccrs.PlateCarree()):
     gl.top_labels = gl.right_labels = False
     ax.set_extent(extension, crs=prj)
     if ext.lower() == 'peru':
+        
         dir_shp = '../SHP/DEPARTAMENTOS.shp'
         shp = list(shpreader.Reader(dir_shp).geometries())
         ax.add_geometries(shp,prj,edgecolor='black',facecolor='None')
